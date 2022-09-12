@@ -20,6 +20,7 @@
 
 <script lang='ts'>
 import { useStore } from "@/store";
+import { ALTERA_PROJETO, ADICIONA_PROJETO } from "@/store/tipo-mutacoes";
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -30,7 +31,7 @@ export default defineComponent({
     },
   },
   mounted() {
-    if(this.id){
+    if (this.id) {
       const projeto = this.store.state.projetos.find(proj => proj.id == this.id)
       this.nomeDoProjeto = projeto?.nome || ''
     }
@@ -42,7 +43,14 @@ export default defineComponent({
   },
   methods: {
     salvar() {
-      this.store.commit("ADICIONA_PROJETO", this.nomeDoProjeto);
+      if (this.id) {
+        this.store.commit(ALTERA_PROJETO, {
+          id: this.id,
+          nome: this.nomeDoProjeto,
+        })
+      } else {
+        this.store.commit(ADICIONA_PROJETO, this.nomeDoProjeto);
+      }
       this.nomeDoProjeto = "";
       this.$router.push("/projetos");
     },
@@ -55,9 +63,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.projetos {
-  padding: 1.25rem;
-}
-</style>
